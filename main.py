@@ -4,12 +4,22 @@ import json
 from fastapi import File,FastAPI, UploadFile
 import aiofiles
 import whisper
+import firebase_admin
+from firebase_admin import credentials, db
 
 model_wis = whisper.load_model("base")
 
 absolute_path = os.path.dirname(__file__)
+static_dir = os.path.join(os.path.dirname(__file__))
+path = static_dir+"/exous.json"
 relative_path = "static/"
 full_path = os.path.join(absolute_path, relative_path)
+
+
+cred = credentials.Certificate(path)
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://exous-39536-default-rtdb.firebaseio.com/'
+})
 
 app = FastAPI()
 
@@ -29,4 +39,9 @@ async def create_upload_file(file: UploadFile = File(...)):
             await out_file.write(content)  # async write file chunk
     var_name = full_path+file.filename # path to the uploaded file
     result = model_wis.transcribe(var_name)
+    var_item = result['text']
+    if var_item.find('going') != -1:
+        ref = db.reference('new_node')
+        ref.set("going")
+        
     return {'results': result}
