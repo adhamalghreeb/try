@@ -43,10 +43,10 @@ async def create_upload_file(file: UploadFile = File(...)):
     if var_item.find('move') != -1:
         ref = db.reference(1)
         ref.set(1)
-    if var_item.find('bye') != -1:
+    elif var_item.find('bye') != -1:
         ref = db.reference(2)
         ref.set(2)
-    if var_item.find('body') != -1:
+    elif var_item.find('body') != -1:
         ref = db.reference(3)
         ref.set(3)        
     return {'results': result}
