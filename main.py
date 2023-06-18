@@ -41,12 +41,12 @@ async def create_upload_file(file: UploadFile = File(...)):
     result = model_wis.transcribe(var_name)
     var_item = result['text']
     if var_item.find('move') != -1:
-        ref = db.reference(1)
+        ref = db.reference("order")
         ref.set(1)
     elif var_item.find('bye') != -1:
-        ref = db.reference(2)
+        ref = db.reference("order")
         ref.set(2)
     elif var_item.find('body') != -1:
-        ref = db.reference(3)
-        ref.set(3)        
+        ref = db.reference("order")
+        ref.set(3)
     return {'results': result}
